@@ -13,7 +13,7 @@ interface TabIconProps {
 
 const TabIcon: React.FC<TabIconProps> = ({ icon, color, name, focused }) => {
   return (
-    <View className="items-center justify-center pt-5">
+    <View className="items-center justify-center pt-7 gap-1">
       <Image
         source={icon}
         resizeMode="contain"
@@ -23,7 +23,8 @@ const TabIcon: React.FC<TabIconProps> = ({ icon, color, name, focused }) => {
       <Text
         className={`${
           focused ? "font-pbold" : "font-psemibold "
-        } text-[10px] pt-[2px] text-primary w-full`}
+        } text-[10px] pt-[2px] w-full`}
+        style={{ color: color }}
       >
         {name}
       </Text>
@@ -36,7 +37,15 @@ const TabsLayout = () => {
     <>
       <Tabs
         screenOptions={{
+          tabBarActiveTintColor: "#007bff",
+          tabBarInactiveTintColor: "#cdcde0",
           tabBarShowLabel: false,
+          tabBarStyle: {
+            backgroundColor: "#161622",
+            borderTopWidth: 0,
+            height: 72,
+            borderTopColor: "#232533",
+          },
         }}
       >
         <Tabs.Screen
