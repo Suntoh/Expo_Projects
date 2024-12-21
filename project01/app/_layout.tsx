@@ -30,19 +30,27 @@ const RootLayout = () => {
   return (
     <Stack>
       <Stack.Screen
+        name="(auth)"
+        options={{ headerShown: false, navigationBarHidden: true }}
+      />
+      <Stack.Screen
+        name="(tabs)"
+        options={{ headerShown: false, navigationBarHidden: true }}
+      />
+      <Stack.Screen
+        name="/search/[query]"
+        options={{ headerShown: false, navigationBarHidden: true }}
+      />
+      <Stack.Screen
         name="index"
-        options={{ title: "Suntoh", headerShown: false }}
+        options={{
+          title: "Suntoh",
+          headerShown: false,
+          navigationBarHidden: true,
+        }}
       />
     </Stack>
   );
-  // return (
-  //   <Slot /> // return the index.tsx file
-  // );
-  //  return (
-  //   <View style={styles.container}>
-  //     <Text>Root Layout</Text>  //return this text
-  //   </View>
-  //  )
 };
 
 export default RootLayout;
