@@ -1,11 +1,12 @@
-import { View, Text } from "react-native";
+import { View, Text, Alert } from "react-native";
 import React from "react";
 import { SafeAreaView, ScrollView, Image } from "react-native";
 import { images } from "@/constants";
 import { useState } from "react";
 import FormField from "@/components/FormField";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import Button from "@/components/Button";
+import { createDummyUser, createUser } from "@/lib/appwrite";
 
 const SignUp = () => {
   const [form, setForm] = useState({
@@ -14,8 +15,26 @@ const SignUp = () => {
     username: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  function handleSubmit(): void {
-    throw new Error("Function not implemented.");
+  async function handleSubmit(): Promise<void> {
+    //createDummyUser();
+    if (!form.email) return alert("Email is required");
+    if (!form.password) return alert("Password is required");
+    if (!form.username) return alert("Username is required");
+
+    setIsSubmitting(true);
+
+    try {
+      const result = await createUser(form.email, form.password, form.username);
+      router.replace("/home");
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert("Error", error.message);
+      } else {
+        Alert.alert("Error", "An unknown error occurred");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
