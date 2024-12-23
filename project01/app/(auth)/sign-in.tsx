@@ -5,7 +5,11 @@ import { images } from "@/constants";
 import FormField from "@/components/FormField";
 import Button from "@/components/Button";
 import { Link, router } from "expo-router";
-import { signIn } from "@/lib/appwrite";
+import { getCurrentUser, signIn, signOut } from "@/lib/appwrite";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import type { Models } from "react-native-appwrite";
+import { useGlobalContext } from "@/context/GlobalProvider";
+type Document = Models.Document;
 
 const SignIn = () => {
   const [form, setForm] = useState({
@@ -13,6 +17,7 @@ const SignIn = () => {
     password: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { loggedIn, setLoggedIn, setUser } = useGlobalContext() as any;
 
   async function handleSubmit(): Promise<void> {
     //createDummyUser();
@@ -22,8 +27,11 @@ const SignIn = () => {
     setIsSubmitting(true);
 
     try {
-      await signIn(form.email, form.password);
-      router.replace("/home");
+      const res = await signIn(form.email, form.password);
+      const result = await getCurrentUser();
+      setLoggedIn(true);
+      setUser(result);
+      if (res) router.replace("/home");
     } catch (error) {
       if (error instanceof Error) {
         Alert.alert("Error", error.message);
@@ -62,6 +70,12 @@ const SignIn = () => {
           <Button
             title="Log In"
             handlePress={handleSubmit}
+            containerStyles="mt-7 ml-4"
+            isLoading={isSubmitting}
+          />
+          <Button
+            title="Log out"
+            handlePress={() => signOut()}
             containerStyles="mt-7 ml-4"
             isLoading={isSubmitting}
           />

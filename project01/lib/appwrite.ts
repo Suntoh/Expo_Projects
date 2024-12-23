@@ -83,6 +83,14 @@ export const signIn = async (email: string, password: string) => {
   }
 };
 
+export const signOut = async () => {
+  try {
+    await account.deleteSession("current");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getCurrentUser = async () => {
   try {
     const currentAcount = await account.get();
@@ -95,7 +103,7 @@ export const getCurrentUser = async () => {
     );
     if (!currnetUser) throw new Error("User not found");
 
-    return currnetUser.documents[0] as unknown as Document;
+    return currnetUser.documents[0];
   } catch (error) {
     console.log(error);
     return null;
