@@ -37,8 +37,13 @@ const RootLayout = () => {
         />
         <Stack.Screen
           name="(tabs)"
-          options={{ headerShown: false, navigationBarHidden: true }}
+          options={{
+            headerShown: false,
+            navigationBarHidden: true,
+            statusBarHidden: true,
+          }}
         />
+
         <Stack.Screen
           name="search/[query]"
           options={{ headerShown: false, navigationBarHidden: true }}
@@ -58,10 +63,10 @@ const RootLayout = () => {
 
 export default RootLayout;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     alignItems: "center",
+//     justifyContent: "center",
+//   },
+// });
