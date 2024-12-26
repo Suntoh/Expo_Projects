@@ -3,7 +3,7 @@ import React from "react";
 import { Post } from "@/type";
 
 interface TrendingProps {
-  post: Post[];
+  post: Post[] | undefined;
 }
 
 const Trending: React.FC<TrendingProps> = ({ post }) => {
@@ -11,10 +11,10 @@ const Trending: React.FC<TrendingProps> = ({ post }) => {
     <View className="flex-row items-center">
       <FlatList
         data={post}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.title.toString()}
         renderItem={({ item }) => (
           <View className="flex-row items-center">
-            <Text className="text-3xl text-white">{item.id}</Text>
+            <Text className="text-3xl text-white">{item.title}</Text>
           </View>
         )}
         horizontal

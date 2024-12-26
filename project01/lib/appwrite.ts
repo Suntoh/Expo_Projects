@@ -1,3 +1,4 @@
+import { Data, Post } from "@/type";
 import {
   Account,
   Avatars,
@@ -107,5 +108,30 @@ export const getCurrentUser = async () => {
   } catch (error) {
     console.log(error);
     return null;
+  }
+};
+
+export const getAllPost = async () => {
+  try {
+    const posts = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.vdoCollectionId
+    );
+    return posts.documents as unknown as Post[];
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getLatestPost = async () => {
+  try {
+    const posts = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.vdoCollectionId,
+      [Query.orderDesc("$createdAt", Query.limit(9))]
+    );
+    return posts.documents as unknown as Post[];
+  } catch (error) {
+    console.log(error);
   }
 };

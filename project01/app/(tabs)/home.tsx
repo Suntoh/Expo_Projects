@@ -1,5 +1,12 @@
-import { View, Text, FlatList, Image, RefreshControl } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  RefreshControl,
+  Alert,
+} from "react-native";
+import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "@/constants";
 import SearchInput from "@/components/SearchInput";
@@ -7,25 +14,63 @@ import Trending from "@/components/Trending";
 import Button from "@/components/Button";
 import { router } from "expo-router";
 import { useState } from "react";
+import { getAllPost, getLatestPost } from "@/lib/appwrite";
+import type { Data, Post } from "@/type";
+import VideoCard from "@/components/VideoCard";
 
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
-  const onRefresh = async () => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
+  const [posts, setPosts] = useState<Post[] | undefined>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [latest, setLatest] = useState<Post[] | undefined>(undefined);
+
+  const fetchLatest = async () => {
+    try {
+      const response = await getLatestPost();
+      setLatest(response);
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Error", "Failed to fetch data");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getAllPost();
+      setPosts(response);
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Error", "Failed to fetch data");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const refetch = async () => {
+    fetchData();
+    fetchLatest();
+  };
+
+  useEffect(() => {
+    fetchData();
+    fetchLatest();
+  }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
   return (
-    <SafeAreaView className="bg-primary h-[110%]">
+    <SafeAreaView className="bg-primary h-full">
       <FlatList
-        data={[{ id: 1 }, { id: 2 }]}
+        data={posts}
         //data={[]}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <Text className="text-2xl mt-8 text-white">{item.id}</Text>
-        )}
+        keyExtractor={(item) => item.title.toString()}
+        renderItem={({ item }) => <VideoCard {...item} />}
         ListHeaderComponent={() => (
           <View className="mt-4 mx-4 ">
             <View className="gap-1 mb-4 mt-2 flex-row min-w-[340px] justify-between items-center">
@@ -50,7 +95,7 @@ const Home = () => {
               <Text className="text-gray-100 text-lg font-pregular mb-3">
                 Latest Video
               </Text>
-              <Trending post={[{ id: 1 }, { id: 2 }]} />
+              <Trending post={latest} />
             </View>
           </View>
         )}
