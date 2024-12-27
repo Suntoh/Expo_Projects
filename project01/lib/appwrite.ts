@@ -128,7 +128,7 @@ export const getLatestPost = async () => {
     const posts = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.vdoCollectionId,
-      [Query.orderDesc("$createdAt", Query.limit(9))]
+      [Query.orderDesc("$createdAt"), Query.limit(9)]
     );
     return posts.documents as unknown as Post[];
   } catch (error) {
