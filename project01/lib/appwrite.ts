@@ -135,3 +135,17 @@ export const getLatestPost = async () => {
     console.log(error);
   }
 };
+
+export const searchPost = async (query: string): Promise<Post[]> => {
+  try {
+    const posts = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.vdoCollectionId,
+      [Query.search("title", query)]
+    );
+    return posts.documents as unknown as Post[];
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};

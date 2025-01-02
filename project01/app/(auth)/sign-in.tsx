@@ -79,6 +79,14 @@ const SignIn = () => {
             containerStyles="mt-7 ml-4"
             isLoading={isSubmitting}
           />
+          <Button
+            title="Guest"
+            handlePress={() => {
+              router.push("/home");
+            }}
+            containerStyles="mt-7 ml-4"
+            isLoading={isSubmitting}
+          />
         </View>
         <View className="flex-row justify-center gap-2">
           <Text className="text-lg text-white font-pmedium">

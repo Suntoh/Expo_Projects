@@ -10,6 +10,10 @@ import React, { act, useState } from "react";
 import { Post } from "@/type";
 import * as Animatable from "react-native-animatable";
 import { icons } from "@/constants";
+import { Video, ResizeMode } from "expo-av";
+import { useVideoPlayer, VideoView } from "expo-video";
+import { WebView } from "react-native-webview";
+import YoutubePlayer from "react-native-youtube-iframe";
 
 interface TrendingProps {
   posts: Post[] | undefined;
@@ -39,6 +43,11 @@ const TrendingItem: React.FC<{ activeItem: Post; item: Post }> = ({
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   //console.log(item.$id, item.title, item.thumbnail);
+  const player = useVideoPlayer({ uri: item.video }, (player) => {
+    useNativeControls: true;
+    resizeMode: ResizeMode.CONTAIN;
+    player.play();
+  });
   return (
     <Animatable.View
       animation={(activeItem.$id === item.$id ? zoomIn : zoomOut) as any}
@@ -46,7 +55,33 @@ const TrendingItem: React.FC<{ activeItem: Post; item: Post }> = ({
       className="mr-5"
     >
       {isPlaying ? (
-        <Text className="text-white">Playing</Text>
+        // <YoutubePlayer
+        //videoId={item.youtubeId}
+        // height={300}
+        // width={200}
+        // webViewStyle={{
+        //   borderRadius: 20,
+        //   overflow: "hidden",
+        //   shadowRadius: 10,
+        //   shadowColor: "black",
+        //   shadowOpacity: 0.4,
+        // }}
+        // onChangeState={(state) => {
+        //   setIsPlaying(true);
+        // }}
+        // />
+        <Video
+          source={{ uri: item.video }}
+          //shouldPlay
+          onPlaybackStatusUpdate={(status) => {
+            if (status.isLoaded && status.didJustFinish) {
+              setIsPlaying(false);
+            }
+          }}
+          useNativeControls
+          resizeMode={ResizeMode.CONTAIN}
+          className="w-52 h-72 rounded-xl overflow-hidden shadow-lg shadow-black/40"
+        />
       ) : (
         <TouchableOpacity
           onPress={() => setIsPlaying(true)}

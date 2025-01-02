@@ -30,6 +30,7 @@
     "expo-status-bar": "~2.0.0",
     "expo-symbols": "~0.2.0",
     "expo-system-ui": "~4.0.6",
+    "expo-video": "~2.0.3",
     "expo-web-browser": "~14.0.1",
     "nativewind": "^2.0.11",
     "react": "18.3.1",
@@ -43,7 +44,8 @@
     "react-native-screens": "~4.1.0",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.13",
-    "react-native-webview": "13.12.5"
+    "react-native-webview": "^13.12.5",
+    "react-native-youtube-iframe": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
