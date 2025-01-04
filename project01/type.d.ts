@@ -6,11 +6,18 @@ export interface Post {
   thumbnail: string;
   prompt: string;
   video: string;
-  creater: {
+  creator: {
     username: string;
     avatar: string;
   };
   // Add other properties of the post object if needed
+}
+
+export interface User {
+  $id: string;
+  email: string;
+  username: string;
+  avatar: string;
 }
 
 type Data = Models.Document | undefined;

@@ -6,7 +6,7 @@ import {
   ImageBackground,
   Image,
 } from "react-native";
-import React, { act, useState } from "react";
+import React, { act, useEffect, useState } from "react";
 import { Post } from "@/type";
 import * as Animatable from "react-native-animatable";
 import { icons } from "@/constants";
@@ -43,11 +43,22 @@ const TrendingItem: React.FC<{ activeItem: Post; item: Post }> = ({
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   //console.log(item.$id, item.title, item.thumbnail);
-  const player = useVideoPlayer({ uri: item.video }, (player) => {
-    useNativeControls: true;
-    resizeMode: ResizeMode.CONTAIN;
-    player.play();
-  });
+  // const player = useVideoPlayer({ uri: item.video }, (player) => {
+  //   useNativeControls: true;
+  //   resizeMode: ResizeMode.CONTAIN;
+  //   player.play();
+  // });
+  const getVdoType = ({ item }: { item: Post }) => {
+    console.log("item", item.video);
+    if (item.video.includes("youtube")) {
+      return { id: item.video.split("v=")[1], isYoutube: true };
+    } else {
+      return { id: item.video, isYoutube: false };
+    }
+  };
+
+  const { id, isYoutube } = getVdoType({ item });
+
   return (
     <Animatable.View
       animation={(activeItem.$id === item.$id ? zoomIn : zoomOut) as any}
@@ -55,33 +66,40 @@ const TrendingItem: React.FC<{ activeItem: Post; item: Post }> = ({
       className="mr-5"
     >
       {isPlaying ? (
-        // <YoutubePlayer
-        //videoId={item.youtubeId}
-        // height={300}
-        // width={200}
-        // webViewStyle={{
-        //   borderRadius: 20,
-        //   overflow: "hidden",
-        //   shadowRadius: 10,
-        //   shadowColor: "black",
-        //   shadowOpacity: 0.4,
-        // }}
-        // onChangeState={(state) => {
-        //   setIsPlaying(true);
-        // }}
-        // />
-        <Video
-          source={{ uri: item.video }}
-          //shouldPlay
-          onPlaybackStatusUpdate={(status) => {
-            if (status.isLoaded && status.didJustFinish) {
-              setIsPlaying(false);
-            }
-          }}
-          useNativeControls
-          resizeMode={ResizeMode.CONTAIN}
-          className="w-52 h-72 rounded-xl overflow-hidden shadow-lg shadow-black/40"
-        />
+        <View className="w-52 h-72 rounded-xl overflow-hidden shadow-lg shadow-black/40 items-center justify-center">
+          {isYoutube ? (
+            <View>
+              <YoutubePlayer
+                videoId={id}
+                height={300}
+                width={200}
+                webViewStyle={{
+                  borderRadius: 20,
+                  overflow: "hidden",
+                  shadowRadius: 10,
+                  shadowColor: "black",
+                  shadowOpacity: 0.4,
+                }}
+                onChangeState={(state) => {
+                  setIsPlaying(true);
+                }}
+              />
+            </View>
+          ) : (
+            <Video
+              source={{ uri: item.video }}
+              shouldPlay
+              isMuted={false}
+              onPlaybackStatusUpdate={(status) => {
+                if (status.isLoaded && status.didJustFinish) {
+                  setIsPlaying(false);
+                }
+              }}
+              useNativeControls
+              resizeMode={ResizeMode.CONTAIN}
+            />
+          )}
+        </View>
       ) : (
         <TouchableOpacity
           onPress={() => setIsPlaying(true)}

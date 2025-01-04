@@ -3,16 +3,28 @@ import React, { useState } from "react";
 import { Post } from "@/type";
 import { icons } from "@/constants";
 import { ResizeMode, Video } from "expo-av";
+import YoutubePlayer from "react-native-youtube-iframe";
 
 const VideoCard = (post: Post) => {
   const {
     title,
     thumbnail,
     video,
-    creater: { username, avatar },
+    creator: { username, avatar },
   } = post;
 
   const [isPlaying, setIsPlaying] = useState(false);
+
+  const getVdoType = ({ post }: { post: Post }) => {
+    console.log("post", post.video);
+    if (post.video.includes("youtube")) {
+      return { id: post.video.split("v=")[1], isYoutube: true };
+    } else {
+      return { id: post.video, isYoutube: false };
+    }
+  };
+
+  const { id, isYoutube } = getVdoType({ post });
 
   return (
     <View className="flex-col items-center px-4 my-4 mb-8">
@@ -46,18 +58,39 @@ const VideoCard = (post: Post) => {
       </View>
       {isPlaying ? (
         <View className="w-full rounded-lg mt-3 items-center justify-center">
-          <Video
-            source={{ uri: post.video }}
-            //shouldPlay
-            onPlaybackStatusUpdate={(status) => {
-              if (status.isLoaded && status.didJustFinish) {
-                setIsPlaying(false);
-              }
-            }}
-            useNativeControls
-            resizeMode={ResizeMode.CONTAIN}
-            className="w-full h-60 rounded-xl overflow-hidden shadow-lg shadow-black/40"
-          />
+          {isYoutube ? (
+            <View className="mt-4">
+              <YoutubePlayer
+                videoId={id}
+                height={250}
+                width={350}
+                webViewStyle={{
+                  borderRadius: 20,
+                  overflow: "hidden",
+                  shadowRadius: 10,
+                  shadowColor: "black",
+                  shadowOpacity: 0.4,
+                }}
+                onChangeState={(state) => {
+                  setIsPlaying(true);
+                }}
+              />
+            </View>
+          ) : (
+            <Video
+              source={{ uri: post.video }}
+              shouldPlay
+              isMuted={false}
+              onPlaybackStatusUpdate={(status) => {
+                if (status.isLoaded && status.didJustFinish) {
+                  setIsPlaying(false);
+                }
+              }}
+              useNativeControls
+              resizeMode={ResizeMode.CONTAIN}
+              className="w-full h-60 rounded-xl overflow-hidden shadow-lg shadow-black/40"
+            />
+          )}
         </View>
       ) : (
         <TouchableOpacity

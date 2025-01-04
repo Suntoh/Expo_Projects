@@ -1,16 +1,5 @@
 import { getCurrentUser } from "@/lib/appwrite";
-// import type { Models } from "react-native-appwrite";
-// type Document = Models.Document;
 import { createContext, useContext, useEffect, useState } from "react";
-
-// interface GlobalContextType {
-//   loggedIn: boolean;
-//   setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-//   user: Document | null;
-//   setUser: React.Dispatch<React.SetStateAction<Document | null>>;
-//   isLoading: boolean;
-// }
-//having problems with typescript
 
 export const GlobalContext = createContext();
 
@@ -19,6 +8,14 @@ export const useGlobalContext = () => useContext(GlobalContext);
 const GlobalProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  // useState <
+  // import("@/type").User >
+  // {
+  //   $id: "",
+  //   name: "",
+  //   email: "",
+  //   avatar: "",
+  // };
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

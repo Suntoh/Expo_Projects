@@ -1,4 +1,5 @@
 import { Data, Post } from "@/type";
+import { router } from "expo-router";
 import {
   Account,
   Avatars,
@@ -87,6 +88,7 @@ export const signIn = async (email: string, password: string) => {
 export const signOut = async () => {
   try {
     await account.deleteSession("current");
+    router.replace("/sign-in");
   } catch (error) {
     console.log(error);
   }
@@ -142,6 +144,21 @@ export const searchPost = async (query: string): Promise<Post[]> => {
       appwriteConfig.databaseId,
       appwriteConfig.vdoCollectionId,
       [Query.search("title", query)]
+    );
+    return posts.documents as unknown as Post[];
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
+
+export const getUserPost = async (userId: string): Promise<Post[]> => {
+  try {
+    console.log("userId", userId);
+    const posts = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.vdoCollectionId,
+      [Query.equal("creator", userId)]
     );
     return posts.documents as unknown as Post[];
   } catch (error) {
