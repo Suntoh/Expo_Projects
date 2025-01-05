@@ -16,9 +16,13 @@ const VideoCard = (post: Post) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const getVdoType = ({ post }: { post: Post }) => {
-    console.log("post", post.video);
     if (post.video.includes("youtube")) {
       return { id: post.video.split("v=")[1], isYoutube: true };
+    } else if (post.video.includes("youtu.be")) {
+      return {
+        id: post.video.split(".be/")[1].split("?si")[0],
+        isYoutube: true,
+      };
     } else {
       return { id: post.video, isYoutube: false };
     }

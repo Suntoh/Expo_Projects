@@ -11,7 +11,7 @@ import { icons } from "@/constants";
 import InfoBox from "@/components/InfoBox";
 
 const Profile = () => {
-  const { user, setUser, setLoggedIn } = useGlobalContext();
+  const { user } = useGlobalContext();
   let user0 = user as User;
   const [refreshing, setRefreshing] = useState(false);
   const [posts, setPosts] = useState<Post[] | undefined>([]);
@@ -39,7 +39,6 @@ const Profile = () => {
     refetch();
   }, [user.$id]);
 
-  console.log("user", user.$id);
   const onRefresh = async () => {
     setRefreshing(true);
     await refetch();

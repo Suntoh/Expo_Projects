@@ -1,12 +1,15 @@
-import { Data, Post } from "@/type";
+import { Data, Post, uploadPost } from "@/type";
 import { router } from "expo-router";
+import { Alert } from "react-native";
 import {
   Account,
   Avatars,
   Client,
   Databases,
   ID,
+  ImageGravity,
   Query,
+  Storage,
 } from "react-native-appwrite";
 
 export const appwriteConfig = {
@@ -28,6 +31,7 @@ client
 const account = new Account(client);
 const avatar = new Avatars(client);
 const databases = new Databases(client);
+const storage = new Storage(client);
 
 export const createDummyUser = () => {
   account.create(ID.unique(), "me@example.com", "password", "Jane Doe").then(
@@ -82,6 +86,11 @@ export const signIn = async (email: string, password: string) => {
     return session;
   } catch (error) {
     console.log(error);
+    if (error instanceof Error) {
+      Alert.alert("Error", error.message);
+    } else {
+      Alert.alert("Error", "An unknown error occurred");
+    }
   }
 };
 
@@ -164,5 +173,103 @@ export const getUserPost = async (userId: string): Promise<Post[]> => {
   } catch (error) {
     console.log(error);
     return [];
+  }
+};
+
+export const getFilePreview = async (
+  fileId: string,
+  type: string
+): Promise<URL> => {
+  let fileUrl = new URL("about:blank");
+  try {
+    if (type === "video") {
+      fileUrl = storage.getFileView(appwriteConfig.storageId, fileId);
+    } else if (type === "image") {
+      fileUrl = storage.getFilePreview(
+        appwriteConfig.storageId,
+        fileId,
+        2000,
+        2000,
+        "top" as ImageGravity,
+        100
+      );
+    } else {
+      throw new Error("Invalid file type");
+    }
+    if (!fileUrl) throw new Error("File not found");
+    console.log(fileUrl);
+    return fileUrl;
+  } catch (error) {
+    console.log(error);
+    return fileUrl;
+  }
+};
+
+interface FileAsset {
+  mimeType: string;
+  [key: string]: any;
+}
+
+export const uploadFile = async (file: any, type: string): Promise<URL> => {
+  if (!file) return new URL("about:blank");
+  const { mimeType, ...rest } = file;
+  const asset = {
+    type: mimeType,
+    ...rest,
+  };
+  try {
+    const uploadFile = await storage.createFile(
+      appwriteConfig.storageId,
+      ID.unique(),
+      asset
+    );
+    console.log(uploadFile, type);
+    const fileUrl = await getFilePreview(uploadFile.$id, type);
+    return fileUrl;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const createPost = async (post: uploadPost) => {
+  try {
+    if (typeof post.video === "string") {
+      const thumbnail = await uploadFile(post.thumbnail, "image");
+      const newPost = await databases.createDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.vdoCollectionId,
+        ID.unique(),
+        {
+          title: post.title,
+          thumbnail,
+          prompt: post.prompt,
+          video: post.video,
+          creator: post.userId,
+        }
+      );
+      return newPost;
+    } else {
+      const [thumbnail, video] = await Promise.all([
+        uploadFile(post.thumbnail, "image"),
+        uploadFile(post.video, "video"),
+      ]);
+      const newPost = await databases.createDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.vdoCollectionId,
+        ID.unique(),
+        {
+          title: post.title,
+          thumbnail,
+          prompt: post.prompt,
+          video,
+          creator: post.userId,
+        }
+      );
+      return newPost;
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 };

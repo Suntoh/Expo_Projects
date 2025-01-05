@@ -17,7 +17,7 @@ const SignIn = () => {
     password: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { loggedIn, setLoggedIn, setUser } = useGlobalContext() as any;
+  const { setLoggedIn, setUser } = useGlobalContext() as any;
 
   async function handleSubmit(): Promise<void> {
     //createDummyUser();

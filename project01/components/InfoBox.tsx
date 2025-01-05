@@ -5,7 +5,7 @@ import { User } from "@/type";
 const InfoBox = ({ user }: { user: User }) => {
   return (
     <View className="pt-4">
-      <Text className={`text-white text-center font-psemibold`}>
+      <Text className={`text-white text-center text-xl font-psemibold`}>
         {user.username}
       </Text>
       <View className="flex-row justify-between items-center w-full px-24 mt-5">

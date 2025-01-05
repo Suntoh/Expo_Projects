@@ -13,6 +13,13 @@ export interface Post {
   // Add other properties of the post object if needed
 }
 
+export interface uploadPost {
+  userId: string;
+  title: string;
+  thumbnail: FileAsset | null;
+  prompt: string;
+  video: any;
+}
 export interface User {
   $id: string;
   email: string;

@@ -4,7 +4,7 @@
     "slug": "project01",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "project01/assets/images/icon.png",
+    "icon": "project01/assets/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,

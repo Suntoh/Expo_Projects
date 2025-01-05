@@ -17,8 +17,10 @@ import { useState } from "react";
 import { getAllPost, getLatestPost } from "@/lib/appwrite";
 import type { Data, Post } from "@/type";
 import VideoCard from "@/components/VideoCard";
+import { useGlobalContext } from "@/context/GlobalProvider";
 
 const Home = () => {
+  const { user, setUser, setLoggedIn } = useGlobalContext();
   const [refreshing, setRefreshing] = useState(false);
   const [posts, setPosts] = useState<Post[] | undefined>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -75,11 +77,11 @@ const Home = () => {
           <View className="mt-4 mx-4 ">
             <View className="gap-1 mb-4 mt-2 flex-row min-w-[340px] justify-between items-center">
               <View>
-                <Text className="text-xl font-pmedium text-white">
+                <Text className="text-xl font-pmedium text-white pb-1">
                   Welcome Back
                 </Text>
                 <Text className="text-3xl text-secondary font-psemibold">
-                  Suntoh !
+                  {user?.username} !
                 </Text>
               </View>
               <View className="mt-2">

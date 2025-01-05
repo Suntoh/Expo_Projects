@@ -42,16 +42,14 @@ const TrendingItem: React.FC<{ activeItem: Post; item: Post }> = ({
   item,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  //console.log(item.$id, item.title, item.thumbnail);
-  // const player = useVideoPlayer({ uri: item.video }, (player) => {
-  //   useNativeControls: true;
-  //   resizeMode: ResizeMode.CONTAIN;
-  //   player.play();
-  // });
   const getVdoType = ({ item }: { item: Post }) => {
-    console.log("item", item.video);
     if (item.video.includes("youtube")) {
       return { id: item.video.split("v=")[1], isYoutube: true };
+    } else if (item.video.includes("youtu.be")) {
+      return {
+        id: item.video.split(".be/")[1].split("?si")[0],
+        isYoutube: true,
+      };
     } else {
       return { id: item.video, isYoutube: false };
     }
