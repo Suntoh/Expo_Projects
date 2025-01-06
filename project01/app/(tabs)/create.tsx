@@ -18,6 +18,7 @@ import { router } from "expo-router";
 import { createPost } from "@/lib/appwrite";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import YoutubePlayer from "react-native-youtube-iframe";
+import * as ImagePicker from "expo-image-picker";
 
 const Create = () => {
   const { user } = useGlobalContext();
@@ -94,12 +95,13 @@ const Create = () => {
 
   const openPicker = async (selectType: string) => {
     try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type:
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes:
           selectType === "video/*"
-            ? ["video/mp4", "video/gif"]
-            : ["image/png", "image/jpeg", "image/jpg"],
-        copyToCacheDirectory: true,
+            ? ImagePicker.MediaTypeOptions.Videos
+            : ImagePicker.MediaTypeOptions.Images,
+        aspect: [4, 3],
+        quality: 1,
       });
       if (!result.canceled) {
         if (selectType === "video/*") {
